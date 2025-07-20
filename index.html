@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Demo app</title>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    body {
+      color: #bbbbbb;
+      background: #333333;
+      font-family: Arial, sans-serif;
+    }
+
+    #info {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #222;
+      border-bottom: 1px solid #444;
+    }
+
+    .colorPicker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .colorPicker input[type="color"] {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+
+    .colorPicker label {
+      font-size: 12px;
+      color: #ccc;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .door-controls {
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      gap: 10px;
+    }
+
+
+    #container {
+      width: 100vw;
+      max-width: 1200px;
+      aspect-ratio: 16/9;
+      height: auto;
+      max-height: 80vh;
+      margin: auto;
+      display: block;
+    }
+
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="info">
+    <span class="colorPicker">
+      <input id="paint-color" type="color" value="#ff0000">
+      <label><i class="fa-solid fa-spray-can-sparkles"></i> Paint</label>
+    </span>
+
+    <span class="colorPicker">
+      <input id="glass-color" type="color" value="#ffffff">
+      <label><i class="fa-regular fa-window-maximize"></i> Glass</label>
+    </span>
+
+    <button id="toggle-car-move"><i class="fa-solid fa-car-side"></i> Toggle Car</button>
+    <div class="door-controls">
+      <button id="toggle-door-fl">FL Door</button>
+      <button id="toggle-door-fr">FR Door</button>
+      <button id="toggle-door-rl">RL Door</button>
+      <button id="toggle-door-rr">RR Door</button>
+    </div>
+    
+    <button id="toggle-camera-view"><i class="fa-solid fa-camera"></i> Camera</button>
+  </div>
+
+  <div id="container"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
