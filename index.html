@@ -2,24 +2,49 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Demo app</title>
-
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <meta charset="UTF-8" />
+  <title>3D Car Viewer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      color: #bbbbbb;
-      background: #333333;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .tv-frame {
+      background: #111;
+      padding: 20px;
+      border-radius: 40px;
+      box-shadow: 0 0 50px #000, inset 0 0 30px #222;
+      border: 6px solid #333;
+    }
+
+    #three-container {
+      width: 90vw;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: inset 0 0 8px #000, 0 0 30px #000;
+      background: #000;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     #info {
@@ -27,103 +52,158 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 12px;
-      padding: 12px;
-      background: #222;
-      border-bottom: 1px solid #444;
+      gap: 14px;
+      padding: 10px 16px;
+      margin-top: 16px;
+      background: #1a1a1a;
+      border-radius: 16px;
+      box-shadow: inset 0 0 8px #111, 0 0 12px #000;
+      max-width: 90vw;
+      font-size: 14px;
+    }
+
+
+    button {
+      background: #2a2a2a;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    button:hover {
+      background: #444;
+      transform: scale(1.05);
     }
 
     .colorPicker {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .colorPicker input[type="color"] {
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       border: none;
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
     .colorPicker label {
-      font-size: 12px;
+      font-size: 13px;
       color: #ccc;
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
+    .logo {
+      width: 60px;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+    }
+
+    .colorPicker.fancy {
+      background: #1f1f1f;
+      padding: 6px 8px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 4px #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      transition: transform 0.2s ease;
+      font-size: 11px;
+      min-width: 55px;
+    }
+
+    .colorPicker.fancy label {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #ccc;
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: background 0.3s ease;
+      gap: 3px;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .colorPicker.fancy input[type="color"] {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      cursor: pointer;
+      background: transparent;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
+      transition: box-shadow 0.2s ease;
     }
 
-    .door-controls {
-      display: grid;
-      grid-template-columns: repeat(2, auto);
-      gap: 10px;
+    .colorPicker.fancy input[type="color"]:hover {
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
     }
 
-
-    #container {
-      width: 100vw;
-      max-width: 1200px;
-      aspect-ratio: 16/9;
-      height: auto;
-      max-height: 80vh;
-      margin: auto;
-      display: block;
+    .copyright {
+      position: fixed;
+      bottom: 10px;
+      right: 16px;
+      font-size: 12px;
+      color: #888;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 6px 12px;
+      border-radius: 8px;
+      box-shadow: 0 0 4px #000;
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      transition: opacity 0.3s ease;
     }
 
-    canvas {
-      display: block;
-      width: 100% !important;
-      height: 100% !important;
+    .copyright:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
     }
   </style>
 </head>
 
 <body>
-  <div id="info">
-    <span class="colorPicker">
-      <input id="paint-color" type="color" value="#ff0000">
-      <label><i class="fa-solid fa-spray-can-sparkles"></i> Paint</label>
-    </span>
+  <!-- Optional logo -->
+  <!-- <img class="logo" src="3421605d-c94d-40d8-94c1-1f0144705473.png" alt="Logo"> -->
 
-    <span class="colorPicker">
-      <input id="glass-color" type="color" value="#ffffff">
-      <label><i class="fa-regular fa-window-maximize"></i> Glass</label>
-    </span>
+  <div class="logo">Car Exhibition</div>
 
-    <button id="toggle-car-move"><i class="fa-solid fa-car-side"></i> Toggle Car</button>
-    <div class="door-controls">
-      <button id="toggle-door-fl">FL Door</button>
-      <button id="toggle-door-fr">FR Door</button>
-      <button id="toggle-door-rl">RL Door</button>
-      <button id="toggle-door-rr">RR Door</button>
-    </div>
-    
-    <button id="toggle-camera-view"><i class="fa-solid fa-camera"></i> Camera</button>
+  <div class="tv-frame">
+    <div id="three-container"></div>
   </div>
 
-  <div id="container"></div>
+  <div id="info">
+    <button id="toggle-car-move"><i class="fa-solid fa-car-side"></i></button>
+    <button id="toggle-camera-view"><i class="fa-solid fa-camera"></i></button>
+
+    <span class="colorPicker fancy">
+      <label for="paint-color">
+        <i class="fa-solid fa-spray-can-sparkles"></i> Paint
+      </label>
+      <input id="paint-color" type="color" value="#ff0000">
+    </span>
+
+    <span class="colorPicker fancy">
+      <label for="glass-color">
+        <i class="fa-regular fa-window-maximize"></i> Glass
+      </label>
+      <input id="glass-color" type="color" value="#ffffff">
+    </span>
+
+  </div>
+
+  <div class="copyright">Designed by anhddq, huynhdx</div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 
