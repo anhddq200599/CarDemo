@@ -2,9 +2,28 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+
 
 // Get Container Canvas
 const container = document.getElementById('three-container');
+// Boot logo canvas
+const bootCanvas = document.createElement('canvas');
+bootCanvas.width = container.clientWidth;
+bootCanvas.height = container.clientHeight;
+bootCanvas.style.width = '100%';
+bootCanvas.style.height = '100%';
+
+const ctx = bootCanvas.getContext('2d');
+ctx.fillStyle = 'black';
+ctx.fillRect(0, 0, bootCanvas.width, bootCanvas.height);
+ctx.fillStyle = '#00f0ff';
+ctx.font = 'bold 30px Orbitron, sans-serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillText('🚘 Loading ...', bootCanvas.width / 2, bootCanvas.height / 2);
+
+container.appendChild(bootCanvas);
 
 
 // Scene setup
@@ -14,7 +33,7 @@ const scene = new THREE.Scene();
 // scene.environment.mapping = THREE.EquirectangularReflectionMapping;
 
 const hdrLoader = new RGBELoader();
-hdrLoader.load('textures/suburban_football_field_4k.hdr', function (hdrMap) {
+hdrLoader.load('textures/scythian_tombs_2_4k.hdr', function (hdrMap) {
   hdrMap.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = hdrMap;
   scene.background = hdrMap; // background hơi mờ có chiều sâu
@@ -31,7 +50,7 @@ renderer.setAnimationLoop(animate);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.4;
-container.appendChild(renderer.domElement);
+// container.appendChild(renderer.domElement);
 
 // Resize to match container
 function resize() {
@@ -225,15 +244,32 @@ function setCarPaint(group) {
   });
 }
 
+let loadedCount = 0;
+
+function tryStartApp() {
+  loadedCount++;
+  if (loadedCount === 2) {
+    container.innerHTML = ''; // clear the boot canvas
+    container.appendChild(renderer.domElement); // show real 3D
+    resize(); // update renderer size
+  }
+}
+
 // Load studio environment first
 const studioLoader = new GLTFLoader();
 studioLoader.load('textures/env/showroom.gltf', function (gltf) {
   const studioScene = gltf.scene;
   scene.add(studioScene);
+  tryStartApp();
 });
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath( 'jsm/libs/draco/gltf/' );
 
 
 const carLoader = new GLTFLoader();
+carLoader.setDRACOLoader(dracoLoader);
+
 carLoader.load(
   'models/VolvoS90/volvos90.gltf',
   function (gltf) {
@@ -242,6 +278,8 @@ carLoader.load(
     scene.add(carModel);
 
     setCarPaint(carModel);
+
+    tryStartApp();
 
     wheels.push(
       carModel.getObjectByName( 'Rim_FL' ),
